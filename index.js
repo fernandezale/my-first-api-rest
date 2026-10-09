@@ -1,14 +1,15 @@
 import express from "express";
 import cors from "cors";
 import { dbConnect } from "./src/config/database.js";
+import authRoutes from "./src/routes/auth.routes.js";
 
 const app = express();
 const PORT = 5500;
 
 app.use(express.json());
-app.get("/", (req, res) => {
-    res.json({ msg: "Peticion OK" });
-});
+app.use(cors());
+//Usamos rutas
+app.use("/api/auth", authRoutes);
 
 await dbConnect();
 
