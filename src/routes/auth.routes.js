@@ -1,15 +1,10 @@
 import Router from 'express';
 import User from '../models/User.js';
+import { getUsers } from "../controllers/auth.controllers.js"
+
 const router = Router();
 
-router.get('/', async (req, res) => {
-    
-    const users = await User.find()
-    res.json({
-        msg: 'Todo bien',
-        users
-    })
-});
+router.get('/', getUsers);
 
 router.post("/", async (req, res) => {
     try {
@@ -30,9 +25,9 @@ router.post("/", async (req, res) => {
             
         });
     } catch (error) {
-        return res.status(400).json({
+        return res.status(500).json({
             ok: false,
-            msg: 'Error creating user',
+            msg: 'Error creando usuario',
             error: error.message
         });
     }
