@@ -20,10 +20,12 @@ export const getUsers = async (req, res) => {
 export const register = async (req, res) => {
     try {
         const { username, email, password } = req.body;
+        //crear usuario
         const user = new User({ username, email, password });
 
         //generar codigo de verificacion
-
+        const verificationCode = user.generateVerificationCode();
+        console.log(`Codigo de verificacion para ${email}: ${verificationCode}`);
         //guardar el usuario
         await user.save();
 
