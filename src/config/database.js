@@ -1,7 +1,5 @@
 import mongoose from "mongoose";
 
-//const MONGO_URI = "mongodb://127.0.0.1:27017/first-api-rest-database"
-
 export const dbConnect = async ()=>{
     try{
         await mongoose.connect(process.env.MONGO_URI);
