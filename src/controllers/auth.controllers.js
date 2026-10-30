@@ -1,4 +1,5 @@
 import User from "../models/User.js"
+import { sendVerificationEmail } from "../config/nodemailer.js";
 
 export const getUsers = async (req, res) => {
     try {
@@ -30,6 +31,7 @@ export const register = async (req, res) => {
         await user.save();
 
         //enviar el email de verificacion
+        await sendVerificationEmail(email, username, verificationCode);
 
         //mandar la respuesta
         return res.status(200).json({
@@ -44,4 +46,8 @@ export const register = async (req, res) => {
             error: error.message
         });
     }
+};
+
+const login = async (req, res) => {
+
 };
