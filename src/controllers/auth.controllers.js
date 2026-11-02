@@ -48,6 +48,95 @@ export const register = async (req, res) => {
     }
 };
 
-const login = async (req, res) => {
+export const login = async (req, res) => {
+    try {
+        const {email, password}= req.body;
+        const user = await User.findOne({email});
 
+        if(!user){
+            return res.status(401).json({
+                ok: false,
+                msg: 'Credenciales incorrectas'
+            });
+        }
+        //chequear que el password coincida
+        const isPasswordValid = await user.comparePassword(password);
+        if(!isPasswordValid){
+            return res.status(403).json({
+                ok: false,
+                msg: 'Credenciales incorrectas'
+            });
+        }
+        //chequear si el email esta verificado
+        if(!user.emailVerified){
+            return res.status(403).json({
+                ok: false,
+                msg: 'El email no esta verificado'
+            });
+        }
+        //generar el token de verificacion
+        //Y guardar el token en las cookies del navegador
+
+        //iniciar sesion
+        return res.status(200).json({
+            ok: true,
+            msg: 'Inicio de sesion exitoso!!!'
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error al iniciar sesion',
+            error: error.message
+        });
+
+    }
+
+};
+
+//verificar el codigo de verificacion
+export const verifyEmail = async (req, res) => {
+    try {
+        const {code, email} =req.body
+    //buscamos el usuario por email
+    const user = await User.findOne({email});
+    if(!user){
+        return res.status(404).json({
+            ok: false,
+            msg: 'Usuario no encontrado'
+        });
+    }
+    if(user.verificationCode !== code){
+        return res.status(400).json({
+            ok: false,
+            msg: 'Codigo de verificacion incorrecto'
+        });
+    }
+    if(user.verificationCodeExpires < Date.now()){
+        return res.status(400).json({
+            ok: false,
+            msg: 'Codigo de verificacion expirado'
+        });
+    }
+
+    //marcar el email como verificado
+    user.emailVerified = true;
+    //limpiar el codigo de verificacion y la fecha de expiracion
+    user.verificationCode = undefined;
+    user.verificationCodeExpires = undefined;
+    //guardar el usuario
+    await user.save();
+
+    return res.status(200).json({
+        ok: true,
+        msg: 'Email verificado exitosamente'
+    });
+    }catch (error) {
+        console.error('Error al verificar email:', error);
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error al verificar email',
+            error: error.message
+        });
+    }
 };

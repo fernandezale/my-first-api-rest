@@ -1,24 +1,13 @@
 import nodemailer from "nodemailer";
 
-// Create a transporter using SMTP
-// const transporter = nodemailer.createTransport({
-//   host: "smtp.example.com",
-//   port: 587,
-//   secure: false, // use STARTTLS (upgrade connection to TLS after connecting)
-//   auth: {
-//     user: process.env.SMTP_USER,
-//     pass: process.env.SMTP_PASS,
-//   },
-// });
-
 export const createTransporter = () => {
-    return nodemailer.createTransporter({
-        host:" smtp.gmail.com",
-        port: 587,
+    return nodemailer.createTransport({
+        host:process.env.EMAIL_HOST,
+        port: process.env.EMAIL_PORT,
         secure: false,
         auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASS,
+            user: process.env.EMAIL_USER,
+            pass: process.env.EMAIL_PASS,
         }
     })
 }

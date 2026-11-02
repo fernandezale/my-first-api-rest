@@ -59,4 +59,9 @@ UserSchema.methods.generateVerificationCode = function() {
 }
 //porque no usamos funciones de flecha? porque necesitamos el contexto de this, que hace referencia al usuario que se esta creando
 
+//metodo para comparar contraseñas
+UserSchema.methods.comparePassword = async function(userPassword){
+    return bcrypt.compareSync(userPassword, this.password);
+}
+
 export default model('User', UserSchema);
