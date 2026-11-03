@@ -80,6 +80,17 @@ export const login = async (req, res) => {
         //Y guardar el token en las cookies del navegador
         //httpOnly
 
+        const token = generateToken(user._id);
+
+        const cookieOptions = {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'lax',
+            maxAge: 60*60*1000 // 1 hora
+        };
+
+        res.cookie("token", token, cookieOptions);
+
         //iniciar sesion
         return res.status(200).json({
             ok: true,
