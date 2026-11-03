@@ -1,5 +1,6 @@
 import User from "../models/User.js"
 import { sendVerificationEmail } from "../config/nodemailer.js";
+import { generateToken } from "../utils/jwt.js";
 
 export const getUsers = async (req, res) => {
     try {
@@ -75,12 +76,15 @@ export const login = async (req, res) => {
             });
         }
         //generar el token de verificacion
+        const token = generateToken(user._id);
         //Y guardar el token en las cookies del navegador
+        //httpOnly
 
         //iniciar sesion
         return res.status(200).json({
             ok: true,
-            msg: 'Inicio de sesion exitoso!!!'
+            msg: 'Inicio de sesion exitoso!!!',
+            token: token
         });
 
     } catch (error) {

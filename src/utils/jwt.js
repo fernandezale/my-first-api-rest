@@ -13,6 +13,6 @@ export const verifyToken = (token) => {
 
     }
     catch (error) {
-        throw new Error('Token invalido');
+        throw new Error('Token invalido o expirado');
     }
 };
