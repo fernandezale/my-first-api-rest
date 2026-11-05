@@ -10,9 +10,9 @@ const PORT = 5500;
 
 app.use(express.json());
 app.use(cors());
+app.use(cookieParser());
 //Usamos rutas
 app.use("/api/auth", authRoutes);
-app.use(cookieParser());
 
 await dbConnect();
 

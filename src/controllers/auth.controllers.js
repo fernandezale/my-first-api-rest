@@ -79,9 +79,6 @@ export const login = async (req, res) => {
         const token = generateToken(user._id);
         //Y guardar el token en las cookies del navegador
         //httpOnly
-
-        const token = generateToken(user._id);
-
         const cookieOptions = {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
@@ -94,8 +91,7 @@ export const login = async (req, res) => {
         //iniciar sesion
         return res.status(200).json({
             ok: true,
-            msg: 'Inicio de sesion exitoso!!!',
-            token: token
+            msg: 'Inicio de sesion exitoso!!!'
         });
 
     } catch (error) {
