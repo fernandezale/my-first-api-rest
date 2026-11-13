@@ -25,5 +25,47 @@ export const validateRegister = (req, res, next) => [
             throw new Error("El nombre de usuario ya existe");
         }
     }),
+
+    //validar email
+    check("email")
+    .isEmail().withMessage("El email no es válido")
+    .custom(async (value) => {
+        const user = await User.findOne({ email: value });
+        if (user) {
+            throw new Error("El email ya está registrado");
+        }
+    })
+    .normalizeEmail(),
+
+    //validar password
+    check("password")
+    .isLength({ min: 6 })
+    .withMessage("La contraseña debe tener al menos 6 caracteres")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){6,15}$/)
+    .withMessage("La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial")
+    ,
     handleValidationErrors
+];
+
+//funcion para validar login
+export const validateLogin = (req, res, next) => [
+    check("email")
+    .isEmail().withMessage("Ingrese un email válido")
+    .custom(async (value) => {
+        const user = await User.findOne({ email: value });
+        if (!user) {
+            throw new Error("El email no está registrado");
+        }
+    })
+    .normalizeEmail(),
+
+    //validar password
+    check("password")
+    .notEmpty().withMessage("La contraseña es obligatoria")
+    .isLength({ min: 6 })
+    .withMessage("La contraseña es incorrecta")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){6,15}$/)
+    .withMessage("La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial")
+    ,
+    handleValidationErrors,
 ];
