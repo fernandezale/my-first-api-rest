@@ -69,3 +69,22 @@ export const validateLogin = (req, res, next) => [
     ,
     handleValidationErrors,
 ];
+
+//validacion de codigo de email
+export const validateEmailCode = (req, res, next) => [
+    check("code")
+    .notEmpty().withMessage("El código de verificación es obligatorio")
+    .isLength({ min: 6, max: 6 }).withMessage("El código de verificación debe tener 6 dígitos")
+    .trim()
+    .isNumeric().withMessage("El código de verificación debe ser numérico"),
+    check("email")
+    .isEmail().withMessage("Ingrese un email válido")
+    .custom(async (value) => {
+        const user = await User.findOne({ email: value });
+        if (user.emailVerified) {
+            throw new Error("El email ya esta verificado");
+        }
+    })
+    .normalizeEmail(),
+    handleValidationErrors
+];
