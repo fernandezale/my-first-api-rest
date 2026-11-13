@@ -151,3 +151,48 @@ export const verifyEmail = async (req, res) => {
         });
     }
 };
+
+//cerrar sesion
+export const logout = (req, res) => {
+    const token = req.cookies?.token;
+    if (!token) {
+        return res.status(400).json({
+            ok: false,
+            msg: 'La sesion no fue iniciada. No hay token de autenticacion'
+        });
+    }
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: true,
+        sameSite: 'lax'
+    });
+    return res.status(200).json({
+        ok: true,
+        msg: 'Sesion cerrada exitosamente'
+    });
+};
+
+//ver perfil del usuario
+export const getProfile = (req, res) => {
+    try {
+        const {username, email, role, emailVerified} = req.user;
+        res.status(200).json({
+            ok: true,
+            msg: 'Perfil del usuario',
+            user: {
+                username,
+                email,
+                role,
+                emailVerified
+            }
+        });
+    }catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error al obtener perfil del usuario',
+            error: error.message
+        });
+
+    }
+};
+
