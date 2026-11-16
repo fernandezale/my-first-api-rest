@@ -35,7 +35,7 @@ export const validateRegister = (req, res, next) => [
             throw new Error("El email ya está registrado");
         }
     })
-    .normalizeEmail(),
+    .toLowerCase(),
 
     //validar password
     check("password")
@@ -51,13 +51,14 @@ export const validateRegister = (req, res, next) => [
 export const validateLogin = (req, res, next) => [
     check("email")
     .isEmail().withMessage("Ingrese un email válido")
+    .trim()
+    .toLowerCase()
     .custom(async (value) => {
         const user = await User.findOne({ email: value });
         if (!user) {
             throw new Error("El email no está registrado");
         }
-    })
-    .normalizeEmail(),
+    }),
 
     //validar password
     check("password")
@@ -79,26 +80,30 @@ export const validateEmailCode = (req, res, next) => [
     .isNumeric().withMessage("El código de verificación debe ser numérico"),
     check("email")
     .isEmail().withMessage("Ingrese un email válido")
+    .toLowerCase()
     .custom(async (value) => {
         const user = await User.findOne({ email: value });
+        if (!user) {
+                throw new Error("Usuario no encontrado");
+            }
         if (user.emailVerified) {
             throw new Error("El email ya esta verificado");
         }
-    })
-    .normalizeEmail(),
+    }),
     handleValidationErrors
 ];
 
 export const validateUpdatePassword = (req, res, next) => [
     check("email")
     .isEmail().withMessage("Ingrese un email válido")
+    .trim()
+    .toLowerCase()
     .custom(async (value) => {
         const user = await User.findOne({ email: value });
         if (!user) {
             throw new Error("El email no está registrado");
         }
-    })
-    .normalizeEmail(),
+    }),
     check("password")
     .isLength({ min: 6 })
     .withMessage("La contraseña debe tener al menos 6 caracteres")
@@ -113,12 +118,12 @@ export const validateEmail = (req, res, next) => [
     check("email")
     .trim()
     .isEmail().withMessage("Ingrese un email válido")
+    .toLowerCase()
     .custom(async (value) => {
         const user = await User.findOne({ email: value });
         if (!user) {
             throw new Error("El email no está registrado");
         }
-    })
-    .normalizeEmail(),
+    }),
     handleValidationErrors
 ]
