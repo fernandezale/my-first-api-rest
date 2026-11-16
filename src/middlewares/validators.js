@@ -88,3 +88,37 @@ export const validateEmailCode = (req, res, next) => [
     .normalizeEmail(),
     handleValidationErrors
 ];
+
+export const validateUpdatePassword = (req, res, next) => [
+    check("email")
+    .isEmail().withMessage("Ingrese un email válido")
+    .custom(async (value) => {
+        const user = await User.findOne({ email: value });
+        if (!user) {
+            throw new Error("El email no está registrado");
+        }
+    })
+    .normalizeEmail(),
+    check("password")
+    .isLength({ min: 6 })
+    .withMessage("La contraseña debe tener al menos 6 caracteres")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])([A-Za-z\d$@$!%*?&]|[^ ]){6,15}$/)
+    .withMessage("La contraseña debe contener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial"),
+
+    handleValidationErrors
+
+]
+
+export const validateEmail = (req, res, next) => [
+    check("email")
+    .trim()
+    .isEmail().withMessage("Ingrese un email válido")
+    .custom(async (value) => {
+        const user = await User.findOne({ email: value });
+        if (!user) {
+            throw new Error("El email no está registrado");
+        }
+    })
+    .normalizeEmail(),
+    handleValidationErrors
+]

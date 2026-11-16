@@ -196,3 +196,72 @@ export const getProfile = (req, res) => {
     }
 };
 
+export const updatePassword = async (req, res) => {
+
+    const { email, password} = req.body;
+    const user = await User.findOne({email});
+    if(!user){
+        return res.status(404).json({
+            ok: false,
+            msg: 'No existe el Usuario'
+        });
+    }
+    
+    if(!user.emailVerified){
+        return res.status(403).json({
+            ok: false,
+            msg: 'El email no esta verificado'
+        });
+    }
+
+        //enviar mail con las instrucciones para cambiar la contraseña
+
+
+    user.password = password
+    await user.save();
+
+    return res.status(200).json({
+        ok: true,
+        msg: "Contraseña actualizada exitosamente",
+        password: user.password,
+    })
+    
+};
+
+export const resentVerificationCode = async (req, res) => {
+    const {email} = req.body;
+    const user = await User.findOne({email})
+
+    if(!user){
+        return res.status(404).json({
+            ok: false,
+            msg: 'No existe el Usuario'
+        });
+    }
+    
+    if(user.emailVerified){
+        return res.status(400).json({
+            ok: false,
+            msg: 'El email ya esta verificado'
+        });
+    }
+
+    const verificationCode = user.generateVerificationCode();
+
+    try{
+        await sendVerificationEmail(user.email, user.username, verificationCode);
+        await user.save();
+        return res.status(200).json({
+            ok: true,
+            msg: 'Codigo de verificacion reenviado exitosamente'
+        });
+    }catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: 'Error al reenviar codigo de verificacion',
+            error: error.message
+        });
+    }
+}
+
+
