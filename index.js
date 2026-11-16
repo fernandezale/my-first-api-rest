@@ -4,6 +4,7 @@ import cors from "cors";
 import { dbConnect } from "./src/config/database.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import cookieParser from "cookie-parser";
+import categoryRoutes from "./src/routes/category.routes.js";
 
 const app = express();
 const PORT = 5500;
@@ -13,7 +14,7 @@ app.use(cors());
 app.use(cookieParser());
 //Usamos rutas
 app.use("/api/auth", authRoutes);
-//app.use("/category");categoryRoutes
+app.use("/api/category", categoryRoutes);
 
 await dbConnect();
 
