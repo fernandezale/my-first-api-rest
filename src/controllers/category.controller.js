@@ -84,4 +84,31 @@ export const UpdateCategory = async (req, res) => {
     })
 }
 //delete
+export const deleteCategory = async (req,res) => {
+    const {id} = req.params;
+    const existeCategoria = await Category.findById(id);
+
+    if(!existeCategoria){
+        return res.status(404).json({
+            ok:false,
+            msg:`El id ${id} no existe`
+        })
+    }
+
+    //validar si la categoria esta activa
+    if(!existeCategoria.estado){
+        return res.status(400).json({
+            ok:false,
+            msg:`La categoria ${existeCategoria.nombre} ya esta desactivada`
+        })
+    }
+
+    const categoriaBorrada = await Category.findByIdAndUpdate(id,{estado:false},{returnDocument:"after"});
+
+    return res.status(200).json({
+        ok:true,
+        msg:`La categoria ${categoriaBorrada.nombre} fue desactivada correctamente`,
+        categoriaBorrada
+    })
+};
 

@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import categoryRoutes from "./src/routes/category.routes.js";
 
 const app = express();
-const PORT = 5500;
+const PORT = process.env.PORT;
 
 app.use(express.json());
 app.use(cors());
