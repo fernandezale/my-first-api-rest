@@ -127,3 +127,10 @@ export const validateEmail = (req, res, next) => [
     }),
     handleValidationErrors
 ]
+
+export const validateRoleAdmin = (req, res, next) => {
+    const rol = req.user.rol;
+    if(rol !== "admin"){
+        
+    }
+}
