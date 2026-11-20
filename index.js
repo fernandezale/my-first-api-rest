@@ -12,9 +12,11 @@ const PORT = process.env.PORT;
 app.use(express.json());
 app.use(cors());
 app.use(cookieParser());
-//Usamos rutas
+
+//Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
+//ruta de producto
 
 await dbConnect();
 
