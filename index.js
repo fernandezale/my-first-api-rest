@@ -16,7 +16,7 @@ app.use(cookieParser());
 //Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
-//ruta de producto
+app.use("/api/products", productRoutes);
 
 await dbConnect();
 
