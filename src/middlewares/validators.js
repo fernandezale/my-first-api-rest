@@ -130,7 +130,8 @@ export const validateEmail = (req, res, next) => [
 ]
 
 export const validateRoleAdmin = (req, res, next) => {
-    const rol = req.user.rol;
+    const rol = req.user.role;
+    console.log("req del usuario:", rol);
     if(rol !== "admin"){
         return res.status(403).json({
             ok: false,
@@ -152,3 +153,14 @@ export const validateCategoryId = async (req, res, next) => {
         })
     }
 };
+
+//validar producto por id
+export const validateProductId = async (req, res, next) => {
+    const existeProducto = await Product.findOne({ _id: req.params.id });
+    if(!existeProducto){
+        return res.status(404).json({
+            ok:false,
+            msg:"El producto no existe"
+        })
+    }
+}

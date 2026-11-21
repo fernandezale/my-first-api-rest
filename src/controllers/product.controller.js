@@ -5,7 +5,7 @@ export const getProducts = async (req = request, res = response) => {
     try {
     //paginacion
     const { limit = 5, from = 0 } = req.query;
-    const { total, products } = await Promise.all([
+    const [ total, products ] = await Promise.all([
         Product.countDocuments({ estado: true }),
         Product.find({ estado: true })
             .skip(Number(from))
@@ -28,11 +28,31 @@ export const getProducts = async (req = request, res = response) => {
 
 }
 
+//get product by id
+export const getProductById = async (req = request, res = response) => {
+    try {
+        const { id } = req.params;
+        const product = await Product.findById(id)
+            .populate("usuario", "username email role")
+            .populate("categoria", "nombre");
+        res.json({
+            ok: true,
+            product,
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            ok: false,
+            msg: "Error al obtener el producto",
+        });
+    }
+};
+
 //create product
 export const createProduct = async (req = request, res = response) => {
     try{
         const { precio, categoria, descripcion, img } = req.body;
-        const { nombre } = req.body.toUpperCase();
+        const nombre = req.body.nombre.toUpperCase();
 
         //validar si existe el producto con ese nombre
         const productDB = await Product.findOne({ nombre });
@@ -59,12 +79,13 @@ export const createProduct = async (req = request, res = response) => {
             msg: `Producto ${product.nombre} creado correctamente`,
         });
     }catch(error){
+        res.status(500).json({
+            ok: false,
+            msg: "Error al crear el producto",
+        });
+    }     
+};
 
-    }
-       
-    
-    
-}
 //update product
 
 //delete product

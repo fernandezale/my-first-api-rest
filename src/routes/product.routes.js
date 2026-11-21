@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProducts, getProductById, createProduct, updateProduct, deleteProduct } from "../controllers/product.controller.js";
+import { getProducts, createProduct, getProductById } from "../controllers/product.controller.js";
 import { authenticate } from "../middlewares/auth.js";
 import { check } from "express-validator";
 import { handleValidationErrors, validateRoleAdmin, validateProductId, validateCategoryId } from "../middlewares/validators.js";
@@ -17,7 +17,22 @@ router.get("/:id", [
 ], getProductById);
 
 //post
+router.post("/", 
+    [
+        authenticate,
+        validateRoleAdmin,
+        check("nombre", "El nombre es obligatorio").notEmpty(),
+        check("categoria")
+        .notEmpty()
+        .withMessage("La categoría es obligatoria")
+        .isMongoId()
+        .withMessage("No es un id de mongo válido"),
+        handleValidationErrors,
+    ],
+ createProduct);
 
 //put
 
 //delete
+
+export default router;

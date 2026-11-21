@@ -5,6 +5,7 @@ import { dbConnect } from "./src/config/database.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import cookieParser from "cookie-parser";
 import categoryRoutes from "./src/routes/category.routes.js";
+import productRoutes from "./src/routes/product.routes.js";
 
 const app = express();
 const PORT = process.env.PORT;
@@ -16,9 +17,12 @@ app.use(cookieParser());
 //Rutas
 app.use("/api/auth", authRoutes);
 app.use("/api/category", categoryRoutes);
-app.use("/api/products", productRoutes);
+app.use("/api/product", productRoutes);
 
-await dbConnect();
+await dbConnect().catch((error) => {
+    console.error("No fue posible iniciar el servidor sin MongoDB", error.message);
+    process.exit(1);
+});
 
 app.listen(PORT, () => {
     console.log(`Server online en puerto ${PORT}`);

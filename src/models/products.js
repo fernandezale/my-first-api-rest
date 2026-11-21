@@ -25,9 +25,6 @@ const ProductoSchema = new Schema(
       ref: "Category",
       required: true,
     },
-    descripcion: {
-      type: String,
-    },
     disponible: {
       type: Boolean,
       default: true,
