@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getProducts, createProduct, getProductById } from "../controllers/product.controller.js";
+import { getProducts, createProduct, getProductById, updateProduct, deleteProduct } from "../controllers/product.controller.js";
 import { authenticate } from "../middlewares/auth.js";
 import { check } from "express-validator";
 import { handleValidationErrors, validateRoleAdmin, validateProductId, validateCategoryId } from "../middlewares/validators.js";
@@ -32,7 +32,27 @@ router.post("/",
  createProduct);
 
 //put
+router.put("/:id", 
+    [
+        authenticate,
+        validateRoleAdmin,
+        check("id").isMongoId().withMessage("El ID del producto es inválido"),
+        check("id").custom(validateProductId),
+        handleValidationErrors,
+    ],
+     updateProduct)
+     ;
 
 //delete
+router.delete("/:id",
+    [
+        authenticate,
+        validateRoleAdmin,
+        check("id").isMongoId().withMessage("El ID del producto es inválido"),
+        check("id").custom(validateProductId),
+        handleValidationErrors,
+    ],
+    deleteProduct
+);
 
 export default router;

@@ -1,6 +1,7 @@
 import { validationResult, check } from "express-validator";
 import User from "../models/User.js";
 import Category from "../models/category.js";
+import Product from "../models/products.js";
 
 export const handleValidationErrors = (req, res, next) => {
     //preguntar si no hay errores
@@ -155,12 +156,9 @@ export const validateCategoryId = async (req, res, next) => {
 };
 
 //validar producto por id
-export const validateProductId = async (req, res, next) => {
-    const existeProducto = await Product.findOne({ _id: req.params.id });
+export const validateProductId = async (id) => {
+    const existeProducto = await Product.findById(id);
     if(!existeProducto){
-        return res.status(404).json({
-            ok:false,
-            msg:"El producto no existe"
-        })
+        throw new Error("No existe un producto con ese id");
     }
 }

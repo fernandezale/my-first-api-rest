@@ -87,5 +87,40 @@ export const createProduct = async (req = request, res = response) => {
 };
 
 //update product
+export const updateProduct = async (req = request, res = response) => {
+
+      const { id } =req.params
+    
+      const { precio, categoria, descripcion, disponible } = req.body;
+      const usuario = req.user._id;
+    
+      let data = {
+        precio,
+        categoria,
+        descripcion,
+        disponible,
+        usuario,
+      };
+      if (req.body.nombre) {
+        data.nombre = req.body.nombre.toUpperCase();
+      }
+    
+      await Product.findByIdAndUpdate(id, data);
+    
+      res.status(200).json({
+        ok: true,
+        message: "Producto actualizado!",
+      });
+};
 
 //delete product
+export const deleteProduct = async (req = request, res = response) => {
+      const { id } = req.params;
+    
+      await Product.findByIdAndUpdate(id, { estado: false });
+    
+      res.status(200).json({
+        ok: true,
+        message: "Producto eliminado",
+      });
+};
